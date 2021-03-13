@@ -1,7 +1,14 @@
 <template>
 
 <div class="container">
-  <Header title="Task Tracker" />
+  <Header 
+    @toggle-add-task="toggleAddTask" 
+    title="Task Tracker" 
+    :showAddTask="showAddTask" 
+  />
+  <div v-show="showAddTask">
+    <AddTask v-on:add-task="addTask" />
+  </div>
   <Tasks 
     @toggle-reminder="toggleReminder"
     @delete-task="deleteTask" 
@@ -14,19 +21,28 @@
 <script>
 import Header from './components/Header'
 import Tasks from './components/Tasks'
+import AddTask from './components/AddTask'
 
 export default {
   name: 'App',
   components: {
     Header,
     Tasks,
+    AddTask,
   },
   data() {
     return {
       tasks: [],
+      showAddTask: false
     }
   },
   methods: {
+    toggleAddTask() {
+      this.showAddTask = !this.showAddTask
+    },
+    addTask(task) {
+      this.tasks = [...this.tasks, task]
+    },
     deleteTask(id) {
       if (confirm("Are you sure you want to delete?")) {
         this.tasks = this.tasks.filter((task) => task.id !== id)      //filter to show only the tasks that differs from the one selected for delete(not persistent)
